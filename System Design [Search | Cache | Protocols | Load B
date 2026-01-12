@@ -1,0 +1,26 @@
+System Design [Search | Cache | Protocols | Load Balancer | CDN | Misc]
+
+--------------------------------------------------------------------------------------------------------------------------------
+												ELASTIC SEARCH (or INVERTED) INDEX
+--------------------------------------------------------------------------------------------------------------------------------
+In real world, We may need to search substring to find matches and DB indexes wont' work.
+Search Index: We Tokenize text.
+Eg: Document 1(Id: 69, Value: "Hello, World") and Document 2(Id:45, Value:"Hello There") is stored as
+
+Prefix Search: Soretd Inverted Indexes and we can binary search now. 
+ [Hello:45,69]
+ [World:69]
+
+Suffix Search : Invert and Sort Prefix Index
+[dlroW:69]
+[olleH:45,69]
+
+Eg: Lucene is a tech that implements search index (runs on single node)
+
+ELASTIC SEARCH: built on top of Lucene for Distributed System
+Similar to Secondary Indexes: We build Search (or inverted) index per partion. For global serach, we may have to join partition.
+
+Partition1 (1-50) : [Hello:20,45 | There:45]. .|||||. .Partition2 (50-100): [Hello:69 | World:69]
+Search Hello -> 20,45,69
+
+Caching: We can cache popular search results

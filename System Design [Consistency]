@@ -1,0 +1,104 @@
+System Design [Consistency]
+
+--------------------------------------------------------------------------------------------------------------------------------
+												2/3 Phase Commit
+--------------------------------------------------------------------------------------------------------------------------------
+
+Distributed Transactions:  a single logical operation involving multiple, separate data stores (like databases or services) that must all succeed or all fail together, ensuring data integrity across a network
+
+
+Cordindator Node: The coordinator initiates a distributed transaction involving writes to multiple participant nodes.
+Prepare Phase: 
+	A. Coordinator sends "Prepare": The central coordinator sends a message to all participating nodes asking if they are ready to commit the transaction.
+	B. Participants vote "Yes" or "No": Each participant performs necessary checks, locks resources, writes tentative changes to a log (to ensure durability), and sends a "Yes" (ready) or "No" (abort) vote back to the coordinator.
+Commit Phase:
+	A. Coordinator decides: If all participants voted "Yes", the coordinator decides to commit; if even one voted "No", it decides to abort.
+	B. Coordinator broadcasts decision: The coordinator sends the final "Commit" or "Abort" command to all participants.
+	C. Participants act: Nodes commit (release locks, make changes permanent) or roll back (release locks, discard changes).
+
+Troubles:
+1. Cordindator Node goes down:
+	Cordindator writes messages to a commit Log and use it in event of crashes.If coordinator cannot recover, manual intervention is required.
+2. Participant Node goes down:
+	If a participant crashes after voting YES, it may hold locks and Coordinator must block indefinitely waiting for recovery.
+
+Fix: Three Phase commit assumes a network with bounded delays and nodes with bounded response times. These assumptions do not hold in real-world distributed systems, so 3PC is rarely used.
+
+TLDR: 2/3 Phase commit are slow and should be avoided with smart partitioning.
+
+--------------------------------------------------------------------------------------------------------------------------------
+												LINEARIZABLITY
+--------------------------------------------------------------------------------------------------------------------------------
+
+LINEARIZABLITY: To make the system appear as if there is only one replica without any replication lag and every operation appears to occur atomically at a single point in time.
+
+CAUSALITY AND TOTAL ORDER:
+	1. Causality preserves happens-before relationships
+	2. Linearizability requires a TOTAL ORDER. Every operation is totally ordered. No two operations are concurrent from the system’s perspective.
+
+How doe we order our writes?
+
+1. Single Leader: Leader send WAL with sequence no for writes to followers as there are no write conflicts.
+	Cons: This is still not linearizable. If leader crashes before followers apply writes, reads from followers may see stale state.
+
+2. Multi Leader: Concurrent writes are possible => write conflicts. So we use Vector Clocks (takes O(n) space where n = #replica) or Lamport Clocks (takes O(1) space) to preserve Causality.
+	
+	LAMPORT Clocks: Tuple(counter, node-id)
+		All Clients and Server have counter starting at 0. For each write, we update counter for client-server particiapting in write as max(clientCounter, serverCounter)+1. To establish order: We sort by counter and then by node-id.
+		Cons: This is still not linearizable as Total order only emerges after collecting all operations. Uniqueness constraints cannot be solved.
+
+So How do we solve Linearizability? We need Total Order Broadcast.
+
+--------------------------------------------------------------------------------------------------------------------------------
+											TOTAL ORDER BROADCAST
+--------------------------------------------------------------------------------------------------------------------------------
+
+What Total Order Broadcast means: All nodes receive every message(no data loss), exactly once(no duplicates) and in the same order(casuality is preserved).
+
+What it requires: Reliable delivery(no matter what happens, every node gets the message) and Totally ordered delivery (no matter what happens, every node gets the messages in the same order).
+
+How we make it happen: Use Distributed Consensus.
+
+--------------------------------------------------------------------------------------------------------------------------------
+											DISTRIBUTED CONSENSUS
+--------------------------------------------------------------------------------------------------------------------------------
+Any consensus algorithm must satisfy the following properties:
+
+Uniform agreement: No two nodes decide differently.
+Integrity: No node decides twice.
+Validity: If a node decides value v, then v was proposed by some node.
+Termination: Every node that does not crash eventually decides on some value.
+
+Algorithm: Leader Election and Leader proposes values and Nodes vote to reach consensus.
+	1. Leader is unique within an epoch. On leader dead, an election is hold with a higher epoch number.
+	2. We have two rounds of voting: one round for selecting the leader and another for voting on the leader’s proposal.
+Note: Quroms (attending nodes) on two rounds must overlap: there has to be at least one node that is present in both rounds, even though quorums can consist of different nodes. This guarantees no two leaders can commit conflicting decisions.
+
+Eg: RAFT, PAXOS, Zab etc.
+
+--------------------------------------------------------------------------------------------------------------------------------
+					CONSENSUS ALGORITHM <=> TOTAL ORDER BROADCAST <=> LINEARIZABLITY
+--------------------------------------------------------------------------------------------------------------------------------
+The most known fault-tolerant consensus algorithms actually don’t make decisions on a single value in each round, but they agree on a sequence of values, which makes them total order broadcast.
+[Repeated consensus rounds → totally ordered broadcast->linearizable state machine]
+Total order broadcast requires messages to be delivered to all nodes exactly once, in the same order. This strategy is equal to several rounds of consensus.
+
+--------------------------------------------------------------------------------------------------------------------------------
+										CONCLUSION: Cordination Services
+--------------------------------------------------------------------------------------------------------------------------------
+
+Cordination Service (Eg: Zookeeper, etcd)
+	It is kv store that allows us to store metadata strongly consistent using some consensus algorithm. Metadata such as IP for DB/Servers, Leader information, paritioning config etc. This can help with a lot of things such as
+1.Failure detection: There are periodic heartbeat checks between Zookeeper and the client. If heartbeats fail above timeout time, the client is considered dead
+2.Change notifications: Clients can subscribe to changes in Zookeeper instead of requesting information regularly, so they can be notified when a new client joins the cluster.
+3. Config Management
+4. Leader Election
+
+
+TLDR: Causal consistency is the strongest possible consistency model that does not slow down due to network delays, and remains available in the face of network failures. 2PC ensures atomicity but blocks and does not tolerate failures well.
+
+Linearizablity is slow. Linearizability requires total order broadcast => mplemented via consensus => used by systems like ZooKeeper and etcd. Thus, Strong consistency is expensive and should be use only for coordination and metadata.
+
+
+
+

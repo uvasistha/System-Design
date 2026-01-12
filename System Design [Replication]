@@ -1,0 +1,130 @@
+System Design [Replication]
+
+Synchronous Replication => Strong Consistency [Slow Writes]
+Asynchronous Replication => Eventual Consistency [Fast Writes] (This is what we will use)
+
+--------------------------------------------------------------------------------------------------------------------------------
+										REPLICATION IMPLEMENTATIONS
+--------------------------------------------------------------------------------------------------------------------------------
+How to replicate?
+1. Replay SQL Statements
+Cons: Statements may be non deterministic. Imagine now(), rand() in statement.
+2. Use WAL. 
+Instead of now(), use exact values.
+Cons: Tightly coupled with application
+3. Replication Log:
+Like WAL but we write general statements. This is what we will use.
+
+--------------------------------------------------------------------------------------------------------------------------------
+										SOLVING REPLICATION LAG
+--------------------------------------------------------------------------------------------------------------------------------
+Asynchronous replication introduces replication lag. Here are common mitigation techniques:
+
+1. Read your own write:
+Way 1: We read from write replica for a short window. (till read replica is not updated)
+Way 2: System compares the timestamp of clients last write against data the timestamp of data about to read from replica. If replica is old, Retry or Fetches or waits for update. Cons: Timestamps are not reliable. (clock skew, network delays)
+
+2. Monotonic writes:
+Problem to solve: If we read from two replica R1 (updated till t:100) and R2 (updated till t:75), we may see data going back in time.
+Fix: Always read from same replica
+
+3. Consistent Prefix reads
+Problem to solve: In partitioned DBs, event1 happens-before event2, but if events are in different partitions, a client can see event2 before event1. (as the replica he read from can be consistent with event12 first and then event 1)
+Fix: We track causal dependencies and route causally related reads to the same partition / replica
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+										SINGLE LEADER REPLICATION
+--------------------------------------------------------------------------------------------------------------------------------
+
+Writes always go to the leader. Reads allowed from followers.
+
+Situation A :If followers goes down
+Use WAL to bring it up to speed.
+
+Situation B: If Leader goes down, latest writes may be lost.
+Fix: We do a failover i.e promote a follower to a leader.
+Failover Scenarios:
+1. [How to tell leader is down]: How do followers tell if leader is down. Say network delays might be there.
+2. [Split Brain]: Let's say leader is down, we promote it to leader. Suddenly old leader is back up. Who is leader now? 
+
+Fix: We need distributed CONSENSUS.
+
+TLDR:
+Pros: High Read throughput, No Write Conflicts
+Cons: Poor Write throughput. Single Point Of Failure
+
+--------------------------------------------------------------------------------------------------------------------------------
+										MULTI LEADER REPLICATION
+--------------------------------------------------------------------------------------------------------------------------------
+
+Multiple leaders accept writes. Leaders asynchronously replicate to each other
+
+Write Conflicts: Two actors update two leaders for a common key conucrrently.
+
+Fix:
+1. Avoid Conflicts: Route all writes for the same key to the same leader. Cons: Low Write throughput.
+
+2. Last Write Wins: We miss write aka data loss. Client timstamps are bad news as can be manipulated and so we use assign it at server. 
+Cons: Timestamps are not reliable due to quartz crystal causing skews and even if they sync with NTP server (a GPS Clock), there can be network delays or we may see time moving backwards post sync. Again, this leads to data loss.
+
+3. Version Vectors : Keep track of all changes from each leader in database for a key. Use it to resolve conflicts.
+Let' say the key is counter. S1 has value 1 and S2 has value 5. VVs are S1 1:[1,0] and S2 5:[0,5]. They sync() to update counter to 6 as S1 6:[1,5] and S2 6: [1,6].
+
+Define Concurrent:
+Imagine V1[2,1,1], V2[1,1,1] and V3[2,1,2]. All enrties in V3>= V2, we can say V2 happened before V1.
+But if not all entries in V3 are greater than V2, it means
+-> there is some write that V2 has seen that V1 has not
+-> there is some write that V1 has seen that V2 has not
+Hence they are concurrent.
+
+Cons: Client must send the version vector when writing.
+
+A. Manual Resolution
+In counter example above, they are concurrent. But we could resolve it for this use case as counters add.
+What if we can't resolve it? We store sibling. Say in above example key is not counter but say some variable. We store both values.
+Application resolves on next read/write using both values. 
+
+B. Automatic Merging with CRDT (conflict free replicated data type):
+DS like counters and set can be represented in CRDT.
+
+
+TLDR:
+Pros: High write throuhput, Good for Larger Geogrpahic Users.
+Cons: Write Conflicts
+--------------------------------------------------------------------------------------------------------------------------------
+										LEADERLESS REPLICATION
+--------------------------------------------------------------------------------------------------------------------------------
+
+Write to many nodes and read from many nodes
+
+Quorum: Let's say there a N Nodes in Database.
+A quorum refers to a subset of nodes in a distributed system that must agree on a specific decision or action for it to be considered valid.
+
+	Write Quorum: The minimum number of nodes (W) that must successfully acknowledge a data write operation before it is considered committed and durable.
+	
+	Read Quorum: The minimum number of nodes (R) that must respond to a read request for the operation to be considered successful and return data.
+
+	A. Strict Quorum: R + W > N ensures that the set of nodes for a read and the set for a write always have at least one node in common, guaranteeing an updated value is available. 
+	Cons: This is not really strongly consistent as there can be race conditions which breaks consistency.
+
+	B. Sloppy Quoroms: Accept writes in nodes that are not the owners of the key. (say when owner is down)
+	Hinted handoff: Say when the owner is back and we make read to it. The write made during it's availablity won't be avaialable for read. The node that temporary was accepting writes for owners behalf will trasnfer data to owner. This is hinted handoff.
+
+	Cons: Even if Quorum is satisfied, but linearizability (strong consistency) is not.
+
+
+Making Leaderless Replication somewhat better.
+1. Read Repair
+Write: Write via updating versions.
+Read: While reading from two replicas with diffrent values, higher version wins. Infact we can use it to update the stale replica (READ REPAIR)
+
+2. Anti-Entropy:
+Replication Logs only keeps writes missing in Replica B from Replica A. This is implemented vie Merkel Trees in O(log n)
+
+
+TLDR: Leaderless Replication is not easily strongly consistent.
+Pros: Good Enough Write Throughput, We can do Quorom Read/Writes
+Cons: Low read Throughput, Write Conflicts
+
+

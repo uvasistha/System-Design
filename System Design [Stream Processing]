@@ -1,0 +1,104 @@
+System Design [Stream Processing]
+
+Real Type Data Processing. Use Case:
+1. Time based bucketing
+2. CDC : Change Data Capture:
+	DataBase Specific Events ====(data specific to database say writes/ transaction logs using WAL)===> BROKER =====> Derived Data
+3. Event Sourcing: Clinet =====database-agnostic-events===> BROKER ====> Consumer =====> DataBase
+
+Note:
+What is a Broker: Black Box that passes messages from producers to consumers.
+Broker Must ensure Exactly once message processing:
+	1. To ensure atleast once : broker must be fault tolerant, persistant and replicated. Consumer must ack events.
+	2. To ensure atmost once (Idempotency): Implemented via 2 phase commit(expensive) or Idempotent consumers using idempotency keys [Recomeneded]
+
+--------------------------------------------------------------------------------------------------------------------------------
+											BROKERS: KAFKA and RabbitMQ
+--------------------------------------------------------------------------------------------------------------------------------
+
+1. In Memory Message Brokers: Messages are stored temporarily (often memory-first) and delivered to consumers using load balancing.
+	Eg: RabbitMQ and AmazonSQS
+
+					  	   ___ConsumerA
+	Q:	[4]-[3]-[2]-[1]===|___
+							  ConsumerB
+	Pros:
+	Maximum throughput
+	Cons:
+	1. Messages can be out of order: say A consumes 1 and if B is free it can consume 2 and if job2 is small this may finish before 1.
+		Load Balancing distributes messages across multiple consumers (or workers) to handle them in parallel.
+		Redelivery (often due to temporary failures, timeouts, or consumer crashes) resends a message to any available consumer. 
+	2. No fault tolerance or replayblity: Once acknowledged, messages are typically removed. If a consumer crashes after ack but before processing, data may be lost
+
+
+2. Log Based Messgae Brokers: Messages are stored sequentially on disk and retained for a configurable duration.
+	Eg: Kafka
+
+						   ___ConsumerA
+	Q:	[4]-[3]-[2]-[1]===|___
+							  ConsumerB
+
+	Pros:
+		All consumers reading from a queue gets all message in order. (per partition)
+		Messages are durable and can be replayed
+	Cons: 
+		A slow consumer can lag behind (head-of-line blocking per partition)
+		Ordering is guaranteed only within a partition.
+
+TLDR: Need ordering & durablity (say CDC or running Average)-> use Kafka.
+	  Need simple task distribution (say newsfeed building, email or video-encoding) use SQS.
+
+--------------------------------------------------------------------------------------------------------------------------------
+												STREAM ENRICHMENT (CDC)
+--------------------------------------------------------------------------------------------------------------------------------
+
+Use Case: Add additional context or attributes to events in a stream.
+
+A. Stream  and Stream Joins
+
+Stream A (id, val1) ─┐
+                     ├─ Consumer (join on id) → Output Stream[id:val1+val2] (Sink Queue)
+Stream B (id, val2) ─┘
+
+Consumer caches events until the matching key arrives. Requires windowing / TTL to avoid unbounded state
+
+
+B. Stream and Table Joins
+
+Stream (id, val1) ─┐
+                   ├─ Consumer (CDC-synced table cache) → Output Stream[id:val1+val2] (Sink Queue)
+Table (id, val2) ──┘
+
+
+Here: Consumer maintains a local cached copy of the table (CDC ensures consistency), and then join stream events as they arrive with table events to enrich them.
+
+C. Table to Table Joins : CDC both table and Consumer maintains two local state stores and joins updates as they arrive.
+
+CDC Scaling:
+	1. Partition broker and consumers by join key.
+	2. Consumers must be stateful, replicated, and fault tolerant. (Achieved by Stateful Stream Processing Frameworks)
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+										STATEFUL STREAM PROCESSING (FLINK | SPARK STREAMING)
+--------------------------------------------------------------------------------------------------------------------------------
+CONSUMER PROPERTY: Each event must affect state exactly once, even during failures.
+
+1. Micro-Batching (Spark Streaming)
+	Data grouped into small time-based batches.
+	State stored externally (e.g., Kafka, HDFS).
+	On failure, only the failed batch is replayed
+
+2. Checkpointing (Flink):
+	Periodically snapshot: Nodes state, Offsets, Metadata.
+	Snapshots stored in S3 / HDFS.
+	On failure, job restarts from last checkpoint.
+
+Implementation: Inject barriers messages into streams, Nodes on reciving barrier message checkpoint their state to S3.
+
+--------------------------------------------------------------------------------------------------------------------------------
+													CONCLUSION
+--------------------------------------------------------------------------------------------------------------------------------
+
+CDC is superior to polling or DB joins for building derived data. Kafka + CDC enables scalable, replayable durable pipelines.
+Stateful consumers are best implemented using Flink or Spark Streaming

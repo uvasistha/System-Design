@@ -1,0 +1,149 @@
+System Designs [Transcations]
+
+Transcations: Sequence of one or more db operations executed as a single logical unit of work.
+START : STATEMENTS : END (commit/abort)
+
+--------------------------------------------------------------------------------------------------------------------------------
+													ACID
+--------------------------------------------------------------------------------------------------------------------------------
+ACID: DB gurantees certain write properties for transactions
+
+Automacity: All writes suceed or none of them do.
+
+Consistency: All fails occur gracefully, no constraints (Property of the application, not the DB.) are broken i.e DB moves from one consistent state to other consistent state.
+
+Isolation: Transcations run independently. No race conditions. TLDR: We can pretend that only one transaction is running at a time.
+
+Durabllity: Once transcation is commited, changes persist even if system goes dies.
+
+--------------------------------------------------------------------------------------------------------------------------------
+													ACD (Easy Part)
+--------------------------------------------------------------------------------------------------------------------------------
+Achieving ACD is easy.
+Example : Use a WAL (Write ahead log)
+
+Transcation 101:  statement 1, statement 2, Commit
+
+WAL: Transaction 101, Transcation 105, Transcation 201
+
+Each entry in WAL is a transcation and ensures Automacity. We can replay WAL to ensure consistency. Since WAL is in disk, Durablity is satisfied.
+--------------------------------------------------------------------------------------------------------------------------------
+											ACHIEVING ISOLATION : ANOMALIES
+--------------------------------------------------------------------------------------------------------------------------------
+But Before some common Anomalies:
+
+1. Dirty Reads: One transaction can read uncommitted writes of other transactions.
+	Fix:
+		A. Pesimistic: Use Pesimistic locking for row. 
+		B. Optimistic MVCC : Use older values untill transactions commit.
+
+2. Dirty Writes: Transcation overwrittes uncommitted writes by other concurrent transcations.
+	Fix: 
+		A. Pesimestic Locking: We can fix is via locking the entire row. It can have deadlocks which can be detected to avoid or in worst case can be resolved via one transcation giving all locks.
+		B. Optimistic locking: We assume conflicts are rare and use row version number/timestamps. Algo like compare and set can be used to commit/abort transactions.
+	Note: Dirty Writes are always protected in any isolation levels in most DB. Eg: Mostly DBs uses use WAL for crash recovery which assumes write were exclusive.
+
+3. Non Repeatable Reads (Fuzzy Read): One transcation reads same row twice and get different value each time. This happens due to another 		transcation updating and commitinng write, which is read again by a transcation.
+
+	Eg: T1 reads A = 20. Whilte other statements of T1 	is executing, T2 updates A=30 and commit. T1 reads A again and find it to be 30.
+
+	Fix: Use Read Locks under 2PL or Snapshots Isolation.
+	
+	WHEN THIS IS REPORTED: One Transaction reads the same object twice.
+	WHAT IT EXPECTS: Same Values.
+	WHAT IT FOUNDS: DIfferent Values.
+
+
+4. Read Skew: Happens when a transaction reads multiple related rows, sees a mix of old and new committed data (due to some other 			concurrent transcation), breaks consistency across rows, not within a single row. 
+ 	
+ 	Eg:Say Invariant is A.balance + B.balance = 100. Lets say A = 25 and B = 75. Transcation T1 is iterating over row and calcualting sume. While T1 read value of A (25), another Transaction T2 took all A's money and put in B (A= 0, B= 100, still A+B is 100) and committed. Now when Transaction T1 reads value of B (which will be 100) and total sum appears to be 125.
+ 	
+ 	Fix: Read skew is not fixed by row-level locks alone unless the whole invariant is locked. Or Use Snapshots Isolation.
+
+ 	WHEN THIS IS REPORTED: Reads multiple related objects.
+ 	WHAT IT EXPECTS: Assumes they reflect a single logical state
+ 	WHAT IT FOUNDS: But sees a mix of states defying logical state.
+
+5. Write Skew: When two committed transactions write different objects, and each fails to observe the other’s write. If there were a 	  	  constraint between the two objects—for example, that their sum should not exceed a threshold—that constraint could be violated.
+	
+	Eg: Invariant is At least one doctor must be on call. Let's say A.on_call = true, B.on_call = true. Transaction T1 reads A and B to be tru → sets A as false → commits. At Same time, Transaction T2 also read A and B as true (same snapshot, does not see T1’s write) → sets B=false → commits. Invariant is violated, even though both transactions committed successfully.
+	
+	Fix: Hold Locks over all rows of invariant. Use predicate locks, or  Serializable Snapshot Isolation (SSI) with conflict detection.
+
+	WHEN THIS IS REPORTED: Multiple transactions independently validate a shared invariant.
+	WHAT IT EXPECTS: The invariant remains true after each transaction commits.
+	WHAT IT FINDS: The invariant is violated due to disjoint concurrent writes.
+
+6. Phamtom Reads: Occurs when a transaction re-executes same query or range scan and sees new or missing keys because another transaction  	  inserted or deleted (or updated across a predicate) rows.
+
+	Eg:T1 and T2 both operate on set of rows that match the query predicate. T2 deletes a row, it will effect T1s row set.
+	
+	Fix: Use Predicates Locks. Instead of locking just a row, lock a range of keys matching the query predicate. At time rows won't exist in table, we will have to Materialize conflicts to take locks. or SSI with conflict detetction.
+	
+	WHEN THIS IS REPORTED : Executes a range / predicate / scan.
+	WHAT IT EXPECTS: Assumes the membership is stable.
+	WHAT IT FOUNDS: But observes new or missing elements.
+
+7. Lost Update: Similar to Dirty Write but write are committed. A lost update occurs when two transactions read the same data, modify it, and the second committed transaction's update overwrites the first committed transaction's update, causing the first update to be "lost". Fix: Compare&Set, explicit locking or atomic writes. Higher Isolation levels are required to truly fix this.
+
+
+													MENTAL MAP:
+Dirty Read: read = uncommitted ROW, any VALUE {Reads a value written by a transaction that has not committed}
+Dirty Write: write = same ROW, concurrent UNCOMMITTED UPDATES {One transaction overwrites uncommitted data of another}
+Non-repeatable Read: read = same ROW, different VALUE {Same row or key changes}
+Read Skew (Calculate Balance): read = multiple ROWS, different SNAPSHOTS across ROWS {Rows reflect different logical states}
+Write Skew (OnCall): write = different ROWS, based on same STALE SNAPSHOT {Invariant violated across rows}
+Phantom Read(Calculate Balance): read = same QUERY, different SET of ROWS {Rows or keys appear / disappear}
+Lost Update: write = same ROW, concurrent update (READ-MODIFY-WRITE) overwrites committed update {One write is lost / overwritten}
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+												ISOLATION LEVELS
+--------------------------------------------------------------------------------------------------------------------------------
+1. Weak Isolations
+
+A. Level=> Read uncommited: Lowest level of isloation.
+Implemented via : Apply exclusive/write locks on rows being written. Write locks live at transaction-level.
+Pros: Protects against dirty writes.
+Cons: Dirty Reads, Non-repeatable reads and Phantom reads.
+
+
+B. Level=> Read Committed : Doesn't allow dirty reads.
+Implemented via: Shared Read locks and exclusive write locks can prevent dirty reads. Read locks are short-lived (statement-level), not transaction-level while Write locks live at transaction-level.
+Pros: No Dirty Read or Writes.
+Cons: Non-repeatable reads and Phantom reads all can occur.
+
+
+C. Level=> Repeatable Read or Snapshot Isolation: Doesn't allow fuzzy (or no-repeatable) reads.
+Implemented via: 2 Phase Locking, Snashots and predicate/range locks.
+	
+
+	Pesimistic Approach:
+	2 Phase Locking: A transaction acquires all the locks it needs before releasing any, ensuring serializability. It uses shared Read locks and exclusive write locks. Transactions have two phases:
+		1. Growing Phase – acquire locks as needed, do not release any locks yet.
+		2. Shrinking Phase – release locks, do not acquire new locks
+		Cons: While 2PL ensures serializability, it can cause deadlocks (so we need to detect them or abort :(, reduce concurrency, increase coordination overhead.
+	Note: 2PL prevents phantom reads only when extended with predicate or range locks. Row-level 2PL alone does NOT prevent phantoms.
+
+
+	Optimistic Approach:
+	MVCC(Multi-Version Concurrency Control): Don’t overwrite data but create versions.Instead of updating a row in place, every write creates a new version of the data and older versions remain for readers.
+	
+	Snapshot Isolation: A snapshot is a logical view of the database at a specific point in time. When a transaction starts, it is assigned a snapshot timestamp. It can only see versions committed before that timestamp. All reads come from the same snapshot. Writes create new versions.
+	Serilaizable Snapshot Isolation: Snapshot Isolation gives row-level correctness, not invariant correctness (read/write skew, phantoms). We detect such dangerous transactions and abort them. This is known as Serilisable SI with conflict detetction.
+	
+	TLDR: MVCC enables snapshot reads via versioned data; snapshot isolation ensures per-row consistency but allows write skew and phantoms; Serializable Snapshot Isolation adds conflict detection to guarantee full serializability without blocking.
+
+
+
+Pros: Prevents dirty writes/reads and non repeatable reads.
+Cons: Phantom Read can occur is some implementations (that don't employ range/predicate locking)
+
+Note on Predicate Locking: We run predicate and take lock over the result. This may be slow and at times we can simplify predicate lock to match a greater set: less locks, more course grained.
+
+
+D. Level => True Serializable Isloation
+Implemented via actual serial execution i.e no Concurrent Transactions.
+
+
+

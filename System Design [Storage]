@@ -1,0 +1,73 @@
+System Design [Storage]
+
+Typical System Arhitecture.
+We want to do CRUD opreations in typical app. Basiclly read/write data.
+We can't read/write each time to a disk. Since disk has moving parts disc and reader-needele which spins to find memory chunks to read/write. In theory, we would want to read/write everything sequentially.
+
+A small example of a Database.
+Imagine a key value table. To read/update a key, we need to scan the whole table to read/update the key. If no entires found, then we add new key at end for fresh writes.
+We can do better, we can use a Append only table. Instead of finding the memory address to update, we can append new entry to end. This way updates/writes are optimised. For reads, we can scan from bottom of Logs to top to find entry. This is still not good for reads.
+
+This is where indexes help.
+
+--------------------------------------------------------------------------------------------------------------------------------
+												INDEXES
+--------------------------------------------------------------------------------------------------------------------------------
+
+1. Log Structured Indexes (Uses Append Only Logs)
+
+	A. Hash-Indexes [Memory]: In memory hashmap. Uses Hash function to find memadress to jump to.(Uses Chaining or probing for conflicts). 
+	Pros: The read/writes are faster. Compaction can run in background to merge segments together (so they are sequential), removing deleted data ("tombstones") etc.
+	Cons: But all keys must fit in memory. Bad at doing range queries. [Find keys b/w A and B].
+
+	b. SS Tables and LSM tress:
+		1. LSM Tree [Memory: Self Balancing tree stored on memory. We use WAL for durablity. Write are fasts as they are appeneded and not inplace, so we don't jump over disk.
+		
+		2. SS-Table [Disk]: If LSM tree is too big, we convert it to a SS-Table and store it on disk. Once written, SS-Tables (String Sorted Table) are sorted by string key and immutable. Background compaction merges multiple SSTables, removes duplicate or deleted data, and creates new, optimized SSTables, reducing fragmentation and read complexity.
+
+	How do we search: First we serach the LSM Tree like we do in BST. If key not found, we search the SS Table (in order from recent to old as if key is present in two SS Table, consider the recent table for the latest value as SS Tables are immutable). Tree Search is log(n) and SStable search is again log(n) via binary serach. We can optimise this further by using sparse index.
+	Sparse Index: Store some keys of SS Table in index so we can reduce area for binary search.
+	Bloom filter to ignore absent keys: Tells wheter key is not in table with 100% accuracy. Say if key is present, it may be wrong.
+
+	For Deletion: We use tombstones. Mark them as deleted in SS Table and compaction will remove it later.
+
+--------------------------------------------------------------------------------------------------------------------------------
+2. Page Based Indexes (Uses Pages): A Page is the smallest unit of data that is read from or written to disk. For below examples, one node is one page.
+
+B-Tress [Disk]: Self Balancing tree stored on disk. Page Sizes are fixed and keys are sorted.
+
+	Shown below is a B+ Tree (Like B Tree but leaf nodes are connected like a Linked List).
+	
+	Pros: Good for Reading Since Leaf nodes are linked, range queries are fast. Since Keys are always sorted, ordered scans (like group by, order by) are also fast.
+	
+	Cons: Write are slow. Random inserts cause Page splits, Page merges and Write amplification. Some Implementation needs to write to WAL before inplace tree operations
+
+How do we search: Like we do in BST.
+
+
+                     [ 30 | 60 ]        ← internal node 
+                    /     |     \
+                   /      |      \
+              [10 | 20] [40 | 50] [70 | 80]   ← internal nodes
+
+     ----------------------------------------------------------
+     | 5 | 10 | 15 | 20 | 30 | 35 | 40 | 45 | 50 | 60 | 65 | ...
+     ----------------------------------------------------------
+       ↑        ↑        ↑        ↑
+    row ptr   row ptr  row ptr  row ptr     ← leaf nodes only
+
+	Q: What if computer is turned off during update/insert operation?
+	A: Durablity/Consistency is maintained dependening on implementation of tree. Some DB creates copy of tree and then point to new one. In this case nothing addtional is needed for durablity. In other implementations, WAL (Write Ahead Log) is maintained i.e we add entry to WAL before we update the tree. WAL can be replayed in event of crash.
+
+--------------------------------------------------------------------------------------------------------------------------------
+							CONCLUSION: LSM Tree vs B Trees (Rather Log Based vs Page Based)
+--------------------------------------------------------------------------------------------------------------------------------
+					LSM + SS-Tables													B+ Tree
+No of keys : Unlimited (since SS-Table uses disk)							Unlimited (since tree is on disk)
+Write : 	 Fast (as we write to memory tree and if tree is big 			Write happens to disk and nodes may need to split/merge,amplify
+			then SStable and new LSM Tree is created for new write)
+Read :       Slow for range queries as we need to search all SS Table 		Fast as Leaf nodes are connected
+
+
+
+ 

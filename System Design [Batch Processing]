@@ -1,0 +1,34 @@
+System Design [Batch Processing]
+
+--------------------------------------------------------------------------------------------------------------------------------
+											BATCH JOBS WITH MAP REDUCE
+--------------------------------------------------------------------------------------------------------------------------------
+Data Store:
+HDFS: Stores distributed big data (low write, very high reads) in rack aware way. Internally uses NameNode(metadata) and DataNode (actual data). Later HDFS introduced multiple Namenodes (via cordination service like zookeeper) for better throughput.
+
+Map Reduce: Allows to batch process of big data stored in HDFS.
+It uses Mapper Object-> (key,value) and Reducer List(key,value) -> (key,value)
+Algo:
+Unstructure Data ==> Mapper ==List(k,v)==> Sort==[k1,v K2,v]=> Shuffle==(Store similar keys to same node)==>Reducer====>Structured Data
+
+Pros: Runs on same node which has data.
+
+TODO : Update Section with Rich Content
+--------------------------------------------------------------------------------------------------------------------------------
+											JOINS IN BATCH JOBS
+--------------------------------------------------------------------------------------------------------------------------------
+TODO : Update Section
+
+1. Sort Merge Join : 
+	Pros: We join on disk so no memory constraints.
+	Cons: 1. Sorting is slow. (unlness key is indexed)
+	 	  2. Shuffle stage needs to send huge data sets over network to nodes. (We can optimise this by sending only small data sets)
+
+2. Parition Hash Join:
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+											MAP REDUCE ALTERNATIVE: SPARK
+--------------------------------------------------------------------------------------------------------------------------------
+
+TODO : Update Section

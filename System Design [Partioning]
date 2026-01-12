@@ -1,0 +1,44 @@
+System Design [Partioning]
+
+Data is big for one server. Break it to mutiple nodes.
+--------------------------------------------------------------------------------------------------------------------------------
+										TYPE OF PARTITIONING
+--------------------------------------------------------------------------------------------------------------------------------
+1. Key Range Based:
+	Lets say we have user with name A-Z in system.. We can partition them as A-C, D-F .... X-Z
+	
+	Pros: Similar keys end up in same partition. Eg: Range Query on Name will work great here.
+	Cons: Hotstop can occur in partition.
+
+2. Key Hash Based:
+
+	Pros: Relatively Even distribution, less hot spots
+	Cons: Range Queries are not efficient.
+	Note: We can use secondary index to optimize range queries in Hash based sharding.
+
+--------------------------------------------------------------------------------------------------------------------------------
+										SECONDARY INDEX
+--------------------------------------------------------------------------------------------------------------------------------
+Secondary indexes allow querying data using attributes other than the primary partition key.
+
+1. Local Secondary Index: LSI is stored within the same partition as the primary data. Each primary partition maintains its own secondary index(say based on key B).
+
+Pros: For Range Queries, we still have to read all partitions(based on A) but atleast we have secondary index (based on B) on each of them.
+	  Strongly Consistent with writes to base data as changes happen in same partition where secondary index resides.
+Cons: Range Query based on secondary index still need to read to all partitions.
+	  Tail Latency Amplification : Range Query is limited to speed of slowest parition.
+	  Write Amplification: For each write, we also have to update index.
+
+2. Global Secondary Index: GSI is partitioned independently of the primary data. All entries for the same indexed key (say B was GSI key) are stored in the same GSI partition, regardless of where the base data (partitioned by A) resides.
+Note: To avoid blocking clinets, update to GSI are asynchronous whenerver write to Base data is made.
+
+Pros: Range Queries (based on GSI) can be served with one GSI Partition.
+Cons: GSIs require their own partitioning strategy. (They may use same nodes used by Base tables though)
+	  Eventual Consistent: Clients may temporarily see stale secondary index results due to aysnc GSI updates on base table writes.
+
+--------------------------------------------------------------------------------------------------------------------------------
+									CONSISTENT HASHING
+--------------------------------------------------------------------------------------------------------------------------------
+
+TODO: Update Section
+
