@@ -1,0 +1,112 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" version="29.3.1">
+  <diagram name="Page-1" id="pHb5VBBjt3ptFe__DMBm">
+    <mxGraphModel dx="976" dy="589" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--22" edge="1" parent="1" source="w6dYGLYxQzgI1mnly6Y--1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="w6dYGLYxQzgI1mnly6Y--2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="API Gateway" vertex="1">
+          <mxGeometry height="60" width="110" x="100" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Signal Service" vertex="1">
+          <mxGeometry height="60" width="120" x="314" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--13" edge="1" parent="1" source="w6dYGLYxQzgI1mnly6Y--3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="w6dYGLYxQzgI1mnly6Y--12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--3" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="User Signal" vertex="1">
+          <mxGeometry height="80" width="60" x="600" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--4" edge="1" parent="1" source="w6dYGLYxQzgI1mnly6Y--5" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" target="w6dYGLYxQzgI1mnly6Y--3" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="410" y="470" as="sourcePoint" />
+            <mxPoint x="460" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--6" edge="1" parent="1" source="w6dYGLYxQzgI1mnly6Y--2" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" target="w6dYGLYxQzgI1mnly6Y--5" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="434" y="450" as="sourcePoint" />
+            <mxPoint x="600" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--5" parent="1" style="image;sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/mscae/Cache_Redis_Product.svg;" value="" vertex="1">
+          <mxGeometry height="42" width="50" x="500" y="429" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--7" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="FriendShip" vertex="1">
+          <mxGeometry height="80" width="60" x="125" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--10" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Check Friends" vertex="1">
+          <mxGeometry height="30" width="100" x="370" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--11" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Upsert/Get Signal" vertex="1">
+          <mxGeometry height="30" width="120" x="444" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--35" edge="1" parent="1" source="w6dYGLYxQzgI1mnly6Y--12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="w6dYGLYxQzgI1mnly6Y--30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Notification Service/&lt;br&gt;Feeds Service Etc." vertex="1">
+          <mxGeometry height="60" width="120" x="570" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--14" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="CDC Event" vertex="1">
+          <mxGeometry height="30" width="80" x="630" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--16" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="PK: User ID" vertex="1">
+          <mxGeometry height="30" width="90" x="480" y="471" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--17" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="PK: User ID" vertex="1">
+          <mxGeometry height="30" width="90" x="650" y="429" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--18" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Index:&lt;br&gt;UserID-&amp;gt; Status&lt;br&gt;FriendID-&amp;gt;Status" vertex="1">
+          <mxGeometry height="60" width="110" x="350" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--19" parent="1" style="text;whiteSpace=wrap;fontFamily=Comic Sans MS;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" value="Design a user Signal Sharing System&#xa;&#xa;&#xa;Functional&#xa;Set favorite singal&#xa;Update signal&#xa;Share with friends&#xa;Visibility: PRIVATE | FRIENDS | PUBLIC&#xa;View friend’s signal&#xa;&#xa;Non-Functional&#xa;Read-heavy (10–100× writes)&#xa;P99 reads &lt; 50ms&#xa;Global scale (100M users)&#xa;Eventual consistency acceptable&#xa;Strong privacy enforcement" vertex="1">
+          <mxGeometry height="250" width="380" x="90" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--20" parent="1" style="text;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;" value="UserSignal(&#xa;user_id        (PK)&#xa;signal_type    (PK)&#xa;signal_value       &#xa;visibility         &#xa;version            &#xa;updated_at&#xa;)&#xa;&#xa;Friendship( PART OF SCOIAL MEDIA SYSTEM&#xa;user_id&#xa;friend_id&#xa;status        // PENDING | ACCEPTED | BLOCKED&#xa;created_at&#xa;)&#xa;Use: Two Index for Fast Reads&#xa;&#xa;SignalUpdatedEvent {&#xa;  user_id&#xa;  signal_type&#xa;  version&#xa;  timestamp&#xa;}" vertex="1">
+          <mxGeometry height="350" width="300" x="520" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--21" parent="1" style="text;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=middle;rounded=0;autosize=1;resizable=0;fontFamily=Comic Sans MS;html=1;" value="We CDC to create friend-&amp;gt;friend relationship indexes&lt;br&gt;&amp;nbsp;to know bidrectional friend status in O(1)&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="320" x="10" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--27" edge="1" parent="1" source="w6dYGLYxQzgI1mnly6Y--23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="w6dYGLYxQzgI1mnly6Y--2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--23" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="Indexes" vertex="1">
+          <mxGeometry height="80" width="60" x="344" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--24" edge="1" parent="1" source="w6dYGLYxQzgI1mnly6Y--7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" target="w6dYGLYxQzgI1mnly6Y--23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--25" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="CDC" vertex="1">
+          <mxGeometry height="30" width="50" x="239" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--26" parent="1" style="text;whiteSpace=wrap;html=1;fontFamily=Comic Sans MS;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(236, 236, 236); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;For Hot User, Seperate Cache Replicas can be maintained.&lt;br&gt;Note: we are not building feed but a pull API to get signal&lt;/span&gt;" vertex="1">
+          <mxGeometry height="40" width="360" x="70" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--28" parent="1" style="image;sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/mscae/Cache_Redis_Product.svg;" value="" vertex="1">
+          <mxGeometry height="42" width="50" x="515" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--29" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Per User Feed" vertex="1">
+          <mxGeometry height="30" width="100" x="490" y="802" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--30" parent="1" style="image;sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/mscae/Cache_Redis_Product.svg;" value="" vertex="1">
+          <mxGeometry height="42" width="50" x="700" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--31" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Hot User Global Cache" vertex="1">
+          <mxGeometry height="30" width="150" x="660" y="802" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--32" edge="1" parent="1" source="w6dYGLYxQzgI1mnly6Y--12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.43;entryY=-0.048;entryDx=0;entryDy=0;entryPerimeter=0;" target="w6dYGLYxQzgI1mnly6Y--28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--33" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Normal usersignal&lt;/span&gt;&lt;/div&gt;Fanout to friends" vertex="1">
+          <mxGeometry height="40" width="120" x="530" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="w6dYGLYxQzgI1mnly6Y--36" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Global Cache is maintained for signal for Hot user&lt;br&gt;We don&#39;t write to per friends news feed (fanout like a Regular user)&lt;br&gt;but write to a global cache for Hot User&lt;br&gt;&amp;nbsp;Data can be pulled from here while showing in feed" vertex="1">
+          <mxGeometry height="70" width="380" x="447" y="850" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
