@@ -1,0 +1,64 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" version="29.3.1">
+  <diagram name="Page-1" id="gjQfRDebBqQ3rx5PAKh-">
+    <mxGraphModel dx="976" dy="589" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-1" parent="1" style="text;whiteSpace=wrap;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;fontFamily=Comic Sans MS;" value="Design a Scalable Facebook-like System to Fetch Friends’ Count with Posts&#xa;&#xa;&#xa;Functional&#xa;Show posts in a feed&#xa;Each post displays:&#xa;    Friend count (or likes / comments)&#xa;    Counts update as users interact&#xa;&#xa;&#xa;Non-Functional&#xa;Extremely high read QPS (every feed render)&#xa;Extremely high write QPS (likes, friendships)&#xa;Eventual consistency is acceptable&#xa;P99 latency &lt; 50 ms&#xa;Must handle hot posts and hot users&#xa;&#xa;&#xa;Note: This is NOT a news feed problem.&#xa;As feed is read heavy but counters are write heavy .&#xa;We will break Feed and Counter System and focus on counter system.&#xa;Feed fetches post IDs. Counter system fetches counts&#xa;Results are merged at read time." vertex="1">
+          <mxGeometry height="340" width="440" x="60" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-2" parent="1" style="text;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=0" value="Feed Service&#xa;Post(&#xa;post_id (PK)&#xa;author_id&#xa;content&#xa;created_at&#xa;)&#xa;&#xa;&#xa;PostCounter(&#xa;post_id (PK)&#xa;friend_count&#xa;like_count&#xa;comment_count&#xa;version&#xa;updated_at&#xa;)" vertex="1">
+          <mxGeometry height="270" width="120" x="560" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Feed Service" vertex="1">
+          <mxGeometry height="60" width="120" x="40" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-7" edge="1" parent="1" source="juIdRk5AQsDoz-bPlLgz-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="juIdRk5AQsDoz-bPlLgz-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Counter Service" vertex="1">
+          <mxGeometry height="60" width="120" x="320" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-5" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="PostCounter" vertex="1">
+          <mxGeometry height="80" width="60" x="600" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-8" edge="1" parent="1" source="juIdRk5AQsDoz-bPlLgz-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="juIdRk5AQsDoz-bPlLgz-6" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="440" y="630" as="sourcePoint" />
+            <mxPoint x="600" y="630" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-6" parent="1" style="image;sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/mscae/Cache_Redis_Product.svg;" value="" vertex="1">
+          <mxGeometry height="42" width="50" x="500" y="609" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-10" edge="1" parent="1" source="juIdRk5AQsDoz-bPlLgz-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="juIdRk5AQsDoz-bPlLgz-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="User Action" vertex="1">
+          <mxGeometry height="60" width="120" x="40" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-11" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="CDC Event" vertex="1">
+          <mxGeometry height="30" width="80" x="240" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-12" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="For Hot Posts, We will shared Redis by postId" vertex="1">
+          <mxGeometry height="30" width="270" x="440" y="715" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-13" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Counter Cache" vertex="1">
+          <mxGeometry height="30" width="100" x="475" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-14" edge="1" parent="1" source="juIdRk5AQsDoz-bPlLgz-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.025;entryY=0.65;entryDx=0;entryDy=0;entryPerimeter=0;" target="juIdRk5AQsDoz-bPlLgz-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-15" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Batch Read Counter&lt;br&gt;&amp;nbsp;for multiple posts in Feed" vertex="1">
+          <mxGeometry height="40" width="160" x="170" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-16" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;b&gt;VERSIONS:&amp;nbsp;&lt;/b&gt;Since CDC Event can be&amp;nbsp; out of order.&lt;br&gt;As Kafka guarantee order per shard but as system scale, topic will be partioned.&lt;br&gt;We use version similar to fencing token (monotonically increasing id), so counter don&#39;t go back in time.&lt;br&gt;(best effort) [Atomic increment to version at storage]" vertex="1">
+          <mxGeometry height="70" width="570" x="240" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="juIdRk5AQsDoz-bPlLgz-17" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Cache Write:&lt;br&gt;Hot Post, Push Data to cache and Normal Post Pull data in cache" vertex="1">
+          <mxGeometry height="40" width="370" x="380" y="800" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
