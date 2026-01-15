@@ -1,0 +1,105 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" version="29.3.1">
+  <diagram name="Page-1" id="Om9DYBrv6h2qlig4qDnn">
+    <mxGraphModel dx="976" dy="589" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-1" parent="1" style="text;whiteSpace=wrap;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" value="Design a system where you return top pages for the home screen. Top is decided by some metric, say likes, shares and views. The top screen needs to refreshed when new top pages come in. The top suggestions page should be renderable in any device, mobile, tablet, desktop.&#xa;&#xa;&#xa;Followup: Top is based on user recommendations.&#xa;&#xa;&#xa;Functional&#xa;Fetch top pages for home screen&#xa;Support real-time / near-real-time updates&#xa;Support personalization per user&#xa;Device-agnostic rendering&#xa;&#xa;&#xa;Non-Functional&#xa;Low latency (&lt;100ms P99)&#xa;High availability&#xa;Scalable to millions of users&#xa;Eventually consistent rankings acceptable" vertex="1">
+          <mxGeometry height="310" width="560" x="40" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Event&lt;br&gt;(like, view,share)" vertex="1">
+          <mxGeometry height="60" width="120" x="40" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-4" edge="1" parent="1" source="NKc8lnMmxln-4O3GPi_p-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="750" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="60" width="120" x="290" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="60" width="120" x="300" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-15" edge="1" parent="1" source="NKc8lnMmxln-4O3GPi_p-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="NKc8lnMmxln-4O3GPi_p-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Flink" vertex="1">
+          <mxGeometry height="60" width="120" x="310" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-9" parent="1" style="image;sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/mscae/Cache_Redis_Product.svg;" value="" vertex="1">
+          <mxGeometry height="60" width="71.43" x="528.57" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Top K Service" vertex="1">
+          <mxGeometry height="60" width="120" x="370" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-12" edge="1" parent="1" source="NKc8lnMmxln-4O3GPi_p-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="NKc8lnMmxln-4O3GPi_p-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="API Gateway" vertex="1">
+          <mxGeometry height="60" width="120" x="170" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-13" edge="1" parent="1" source="NKc8lnMmxln-4O3GPi_p-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.44;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="NKc8lnMmxln-4O3GPi_p-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-16" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="CDC" vertex="1">
+          <mxGeometry height="30" width="50" x="185" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-17" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Kafka" vertex="1">
+          <mxGeometry height="30" width="50" x="73" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-18" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Partitioned by PageID" vertex="1">
+          <mxGeometry height="30" width="140" x="30" y="690" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-19" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Partitioned by PageID" vertex="1">
+          <mxGeometry height="30" width="140" x="280" y="690" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-20" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Top K Aggregation is to be precomputed and cached to Redis for Fast Read&lt;div&gt;Flink consumer will&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;do Windows Aggregation via batching. Flink can wait till time T for events to arrive and batch. (Tumbling Window). Also it make sense to aggrgate at window level if we want to do Sliding Window.&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Option1 : Flink to update Event DB and a cron job can run periodically to precompute and store in Redis.&lt;/span&gt;&lt;/div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Reads to EventDB can be optimised by having individual views say perHour, per Minute, perDay to read from till Redis doesn&#39;t have precomputed entry.&lt;/span&gt;&lt;div style=&quot;&quot;&gt;Option2 : Compute top K (last hour, day, month) Natively in Flink and store to Redis Directly. We don&#39;t need DB altogether.&lt;br&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;SLIDING WINDOW:&lt;br&gt;Option 1 only does Tumbling Windows. For SW, we will have to derive it by using Tumble View Tables.&lt;br&gt;Also it makes practical sense to keep just Last Hour as SW and rest as TB.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="160" width="1160" x="50" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-21" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="CDC" vertex="1">
+          <mxGeometry height="30" width="50" x="465" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-22" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" value="Cron Job" vertex="1">
+          <mxGeometry height="80" width="80" x="650" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-23" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="EventDB" vertex="1">
+          <mxGeometry height="80" width="60" x="515" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-25" edge="1" parent="1" source="NKc8lnMmxln-4O3GPi_p-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=52.5;entryPerimeter=0;" target="NKc8lnMmxln-4O3GPi_p-23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-26" edge="1" parent="1" source="NKc8lnMmxln-4O3GPi_p-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.583;entryDx=0;entryDy=0;entryPerimeter=0;" target="NKc8lnMmxln-4O3GPi_p-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-27" edge="1" parent="1" source="NKc8lnMmxln-4O3GPi_p-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0;entryDx=0;entryDy=52.5;entryPerimeter=0;" target="NKc8lnMmxln-4O3GPi_p-23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-28" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Option 1" vertex="1">
+          <mxGeometry height="30" width="70" x="500" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-29" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Option 2" vertex="1">
+          <mxGeometry height="30" width="70" x="458.57" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-30" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="EventDB(Timestamp, PageID, Metrics)&lt;br&gt;PK: PageID&lt;br&gt;SK: Timestamp" vertex="1">
+          <mxGeometry height="60" width="230" x="465" y="910" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-31" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="updateDB" vertex="1">
+          <mxGeometry height="30" width="80" x="400" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-32" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Compute topK and store in Redis" vertex="1">
+          <mxGeometry height="30" width="200" x="627" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-33" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Additionally,&lt;br&gt;We can use CMS in Flink along side topK Heap for read optimisation." vertex="1">
+          <mxGeometry height="40" width="390" x="10" y="855" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-34" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Option 3: Use TimescaleDB (aggregate Materialzed windows) on top of Event DB. For these views (hour, day, month), PK:PageID and SK:Metric" vertex="1">
+          <mxGeometry height="30" width="790" y="990" as="geometry" />
+        </mxCell>
+        <mxCell id="NKc8lnMmxln-4O3GPi_p-35" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="EventViewsHour/Day/Month(PageID, Metrics)&lt;br&gt;PK: PageID&lt;br&gt;SK: Metric" vertex="1">
+          <mxGeometry height="60" width="270" x="690" y="910" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
